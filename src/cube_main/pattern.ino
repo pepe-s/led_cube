@@ -25,37 +25,33 @@ int shift = 0;
 
 void onece(){
   int led = 0;
-  unsigned long pin = 0;
 
   //光らすLEDの選定
   led = random(0,64);
-  pin = (led % 16) +1;
-  LayerSwitch(ConvLayer(led));
 
   //LEDの点滅  
   for(int i = 0; i < LED_INTERVAL; i++){
-
-    // シフト演算を使って点灯するLEDを選択
-    digitalWrite(LATCHPIN, LOW);    // 送信中はLATCHPINをLOW
-    MyShiftOut( DATAPIN, CLOCKPIN, 16, 1L << pin );
-    digitalWrite(LATCHPIN, HIGH);   // 送信後はLATCHPINをHIGHに戻す
-
+    Led_ON(led);
     delay(1);
   }
 
-
 }
 
-//LEDナンバーからレイヤーを割り出す
-int ConvLayer(int num){
-  if(num < 16)
-    return 0;
-  else if(num < 16 * 2)
-    return 1;
-  else if(num < 16 * 3)
-    return 2;
-  else
-    return 3;
+ void eight(){
+  int led[8] = {0,0,0,0,0,0,0,0};
+
+  //光らすLEDの選定
+  for(int i = 0; i < 8; i++){
+    led[i] = random(0,64);  
+  }
+  
+  //LEDの点滅  
+  for(int i = 0; i < LED_INTERVAL; i++){
+    for(int j = 0; j < 8; j++)
+      Led_ON(led[j]);
+    delay(1);
+  }
+
 }
 
 void slide()

@@ -34,6 +34,7 @@ void MyShiftOut( int dataPin, int clockPin, int bit, unsigned long val )
   }
 }
 
+
 void LayerSwitch(int layer)
 {
   digitalWrite(LAYER1PIN,HIGH); 
@@ -43,6 +44,38 @@ void LayerSwitch(int layer)
   digitalWrite(LAYERS[layer],LOW); 
 }
 
+/*----------------------------------------
+* LEDナンバーからレイヤーを割り出す
+----------------------------------------*/
+int ConvLayer(int num){
+  if(num < 16)
+    return 0;
+  else if(num < 16 * 2)
+    return 1;
+  else if(num < 16 * 3)
+    return 2;
+  else
+    return 3;
+}
+
+/*----------------------------------------
+* 指定した番号のLEDを点灯させる
+----------------------------------------*/
+void Led_ON(int num){
+  
+  unsigned long pin = 0;
+
+  //レイヤーを選択
+  LayerSwitch(ConvLayer(num));
+
+  //アノードのピンを算出
+  pin = (num % 16) + 1;
+
+  // シフト演算を使って点灯するLEDを選択
+  digitalWrite(LATCHPIN, LOW);    // 送信中はLATCHPINをLOW
+  MyShiftOut( DATAPIN, CLOCKPIN, 16, 1L << pin );
+  digitalWrite(LATCHPIN, HIGH);   // 送信後はLATCHPINをHIGHに戻す
+}
 
 /*------------------------------------------------------------------------
 *         main
@@ -63,13 +96,15 @@ void setup()
 
 void loop()
 {
-  onece();
-  /*
-  for(int i = 0; i < 100; i++)
+  for(int i = 0; i < 10; i++)
+    eight();
+  for(int i = 0; i < 50; i++)
+    onece();
+  for(int i = 0; i < 200; i++)
     slide();
-  for(int j = 0; j < 100; j++)
+  for(int i = 0; i < 200; i++)
     updown();
-    */
+    
 }
 
 
